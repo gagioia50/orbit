@@ -1,0 +1,26 @@
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+}
+
+.spazio-sinistro {
+  margin: 0;
+  height: 100%;
+}
+
+textarea {  
+  height: 100%;
+  line-height: 1.5;
+  font-size: 16px;
+  background: transparent;
+  border: none;
+  color: rgb(210, 233, 9);
+}
+
+.invisible::-webkit-scrollbar {
+  display: none;
+}
