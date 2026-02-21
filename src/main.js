@@ -10,21 +10,19 @@ const stats = new Stats();
 stats.dom.style.cssText = 'position:absolute;top:225px;right:0px;';
 document.body.appendChild(stats.dom);
 
-import { bodies } from './myclass';
+import { Planet, Body } from './myclass';
 import { createText } from './text2D';
 const scale = 0.5*0.5*0.5*1.5e-11
 const startDate = new Date('25 Apr 2025');
-const checkDate = new Date('29 Jul 2035');
 const startMillis = startDate.getTime();
-const checkMillis = checkDate.getTime();
-console.log(bodies[0].checkDate)
+let bodies = []
   
 // initialize scene
 const scene = new THREE.Scene()
-const axesHelper = new THREE.AxesHelper(10);
-scene.add(axesHelper );
-// const gridHelper = new THREE.GridHelper(100, 100);
-// scene.add(gridHelper );
+// const axesHelper = new THREE.AxesHelper(10);
+// scene.add(axesHelper );
+const gridHelper = new THREE.GridHelper(100, 100);
+scene.add(gridHelper );
 const geo = new THREE.SphereGeometry( 0.00005, 16, 16 );
 const mat = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 const point = new THREE.Mesh( geo, mat );
@@ -79,6 +77,26 @@ function createCurrentDateString(date) {
   return d+"/"+m+"/"+y;
 }
 
+// read planets data
+let lines = []
+const loader = new THREE.FileLoader();
+const data = await loader.loadAsync( '/src/data.txt' );
+lines = data.split("\n")
+
+// create planet bodies
+let items = []
+for (let i = 0; i < lines.length; i++) {
+  items = lines[i].split(",")
+  if (items[0] == '0') {
+    continue
+  }
+  let body = new Body(items[0], Number(items[1]), Number(items[2]), Number(items[3]), Number(items[4]), 
+            Number(items[5]), Number(items[6]), Number(items[7]), Number(items[8]), items[9], items[10]);
+  bodies.push(body);
+}
+
+let planet = new Planet();
+
 // create meshes
 var myMeshes = []
 for (var i = 0; i < bodies.length; i++) {
@@ -103,9 +121,6 @@ for (let i = 0; i < bodies.length; i++) {
   scene.add(plane)
   planes.push(plane);
 }
-
-// const clock = new THREE.Clock();
-// let counter = 0
 
 // initialize renderer
 const renderer = new THREE.WebGLRenderer({
@@ -134,29 +149,25 @@ function animate() {
          bodies[i].points.shift()
       }
       myMeshLines[i].geometry.setPoints(bodies[i].points)
-       
-      for (var body of bodies) {
-        body.update_position()
-      }
+      planet.update_position(bodies)
+      
     }
 
     let anni = bodies[3].t/60/60/24/365.25;
     let myAnni = anni.toFixed(0)
     let text = "Anni="+myAnni+"\r"
 
+    const str = planet.checkDate;
+    const checkDate = new Date(str);
+    const checkMillis = checkDate.getTime();
     let currentMillis = startMillis + bodies[3].t*1000;
     let currentStringDate = createCurrentDateString(new Date(currentMillis));
-    text += "Date= "+currentStringDate+"\r"+"\r"
-
-    // if (currentMillis > checkMillis) {
-    //   renderer.setAnimationLoop( null );
-    // }
+    if (currentMillis > checkMillis) {
+      renderer.setAnimationLoop( null );
+    }
     
-    for (var body of bodies) {
-      if (body.name != "Sun") {
-        text += body.calc_properties()+"\r";
-      }
-    }     
+    text += "Date= "+currentStringDate+"\r"+"\r"
+    text += planet.calc_properties(bodies)+"\r";
     document.getElementById("properties").value = text
     
     renderer.render( scene, camera );
@@ -178,8 +189,11 @@ function onDocumentKeyDown(event) {
     }
     if (keyCode === 85) { // U key
         renderer.setAnimationLoop( animate );
+        planet.change_values();
     } 
 }
 
 const orbitFolder = gui.addFolder('Orbit');
-orbitFolder.add(bodies[0], 'checkDate').name('Check Date');
+orbitFolder.add(planet, 'proCheckDate').name('Check Date');
+orbitFolder.add(planet, 'proFdt').name('Delta time factor');
+orbitFolder.add(planet, 'change_values').name('Change Values');
