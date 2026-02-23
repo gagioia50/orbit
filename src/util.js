@@ -91,7 +91,7 @@ export function createMeshes(bodies, scene) {
     return myMeshes;
 }
 
-export function createCurrentDateString(date) {
+function createCurrentDateString(date) {
   var d = date.getDate();
   var m = date.getMonth() + 1; //Month from 0 to 11
   var y = date.getFullYear();
@@ -106,4 +106,12 @@ export function createNamePlanes(bodies, scene) {
         planes.push(plane);
     }
     return planes;
+}
+
+export function create_currentDate(str, startMillis, bodies) {
+    const checkDate = new Date(str);
+      const checkMillis = checkDate.getTime();
+      let currentMillis = startMillis + bodies[3].t*1000;
+      let currentStringDate = createCurrentDateString(new Date(currentMillis));
+      return [checkMillis, currentMillis, currentStringDate];
 }

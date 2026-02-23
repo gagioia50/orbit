@@ -1,22 +1,13 @@
 import * as THREE from 'three';
 import Stats from 'three/examples/jsm/libs/stats.module.js'
 import {GUI} from 'three/examples/jsm/libs/lil-gui.module.min.js'
+import { Planet} from './myclass';
+import * as UTI from './util.js'
 
 const gui = new GUI();
 const stats = new Stats();
 stats.dom.style.cssText = 'position:absolute;top:225px;right:0px;';
 document.body.appendChild(stats.dom);
-
-import { Planet} from './myclass';
-import { initializeCamera } from './util.js';
-import { initializeControls } from './util.js';
-import { create_scene } from './util.js';
-import { createTrails } from './util.js';
-import { createBodies } from './util.js';
-import { createMeshes } from './util.js';
-import { createCurrentDateString } from './util.js';
-import { createNamePlanes } from './util.js';
-import { initializeRenderer } from './util.js';
 
 const scale = 1.875e-12
 const startDate = new Date('25 Apr 2025');
@@ -28,14 +19,14 @@ const data = await loader.loadAsync( '/src/data.txt' );
 const linesData = data.split("\n")
 
 const canvas = document.querySelector('canvas.threejs');
-const scene = create_scene();
-const camera = initializeCamera();
-const controls = initializeControls(camera, canvas);
-const bodies = createBodies(linesData);
-const myMeshes = createMeshes(bodies, scene);
-const myMeshLines = createTrails(bodies, scene);
-const planes = createNamePlanes(bodies, scene)
-const renderer = initializeRenderer(canvas);
+const scene = UTI.create_scene();
+const camera = UTI.initializeCamera();
+const controls = UTI.initializeControls(camera, canvas);
+const bodies = UTI.createBodies(linesData);
+const myMeshes = UTI.createMeshes(bodies, scene);
+const myMeshLines = UTI.createTrails(bodies, scene);
+const planes = UTI.createNamePlanes(bodies, scene)
+const renderer = UTI.initializeRenderer(canvas);
 let planet = new Planet();
 
 renderer.setAnimationLoop( animate );
@@ -70,11 +61,7 @@ function animate() {
   let myAnni = anni.toFixed(0)
   let text = "Anni="+myAnni+"\r"
 
-  const str = planet.checkDate;
-  const checkDate = new Date(str);
-  const checkMillis = checkDate.getTime();
-  let currentMillis = startMillis + bodies[3].t*1000;
-  let currentStringDate = createCurrentDateString(new Date(currentMillis));
+  let [checkMillis, currentMillis, currentStringDate] = UTI.create_currentDate(planet.checkDateString, startMillis, bodies);
   if (currentMillis > checkMillis) {
     planet.fdt = 0;
   }

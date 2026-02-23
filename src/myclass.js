@@ -7,7 +7,7 @@ class Planet {
   
   constructor(){
     this.proCheckDate = '01/01/2100'
-    this.checkDate = '01/01/2100'
+    this.checkDateString = '01/01/2100'
     this.proFdt = 0.1
     this.fdt = 0.1
   }
@@ -23,7 +23,7 @@ class Planet {
 
   change_values() {
     let standProCheckDate = this.createStandardDateString(this.proCheckDate);
-    this.checkDate = standProCheckDate;
+    this.checkDateString = standProCheckDate;
 
     this.fdt = this.proFdt;
   }
