@@ -13,12 +13,8 @@ const scale = 1.875e-12
 const startDate = new Date('25 Apr 2025');
 const startMillis = startDate.getTime();
 
-// read planets data
-const loader = new THREE.FileLoader();
-const data = await loader.loadAsync( '/src/data.txt' );
-const linesData = data.split("\n")
-
 const canvas = document.querySelector('canvas.threejs');
+const linesData = await UTI.loadFile('/src/data.txt');
 const scene = UTI.create_scene();
 const camera = UTI.initializeCamera();
 const controls = UTI.initializeControls(camera, canvas);
@@ -33,7 +29,6 @@ renderer.setAnimationLoop( animate );
 
 // animate function
 function animate() {
-
   controls.update()  
   stats.update();
   

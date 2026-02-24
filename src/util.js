@@ -4,6 +4,13 @@ import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import { Body } from './myclass';
 import { createText } from './text2D';
 
+export async function loadFile(filePath) {
+    const loader = new THREE.FileLoader();    
+    const data = await loader.loadAsync( filePath );
+    const linesData = data.split("\n");
+    return linesData;
+}
+    
 export function initializeCamera() {
     const camera = new THREE.PerspectiveCamera( 50, window.innerWidth /window.innerHeight, 0.0001, 6000 );
     camera.position.z = 5
