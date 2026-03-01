@@ -87,7 +87,6 @@ class Planet {
       }
       body.y_old = body.y
     }
-  
   } 
 
   calc_properties (bodies) {

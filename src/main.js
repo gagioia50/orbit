@@ -14,7 +14,7 @@ const startDate = new Date('25 Apr 2025');
 const startMillis = startDate.getTime();
 
 const canvas = document.querySelector('canvas.threejs');
-const linesData = await UTI.loadFile('/src/data.txt');
+const linesData = await UTI.loadFile('/src/data_25apr2025.txt');
 const scene = UTI.create_scene();
 const camera = UTI.initializeCamera();
 const controls = UTI.initializeControls(camera, canvas);
@@ -23,16 +23,16 @@ const myMeshes = UTI.createMeshes(bodies, scene);
 const myMeshLines = UTI.createTrails(bodies, scene);
 const planes = UTI.createNamePlanes(bodies, scene)
 const renderer = UTI.initializeRenderer(canvas);
-let planet = new Planet();
+const planet = new Planet();
 
 renderer.setAnimationLoop( animate );
-
+let dist_min = 1e11
 // animate function
 function animate() {
   controls.update()  
   stats.update();
   
-  if (planet.fdt > 0) {
+  if (planet.fdt !== 0) {
     for (var i = 0; i < bodies.length; i++) {
       var loc_x = scale*bodies[i].x
       var loc_y = scale*bodies[i].z
@@ -48,7 +48,7 @@ function animate() {
       }
       myMeshLines[i].geometry.setPoints(bodies[i].points)
       planet.update_position(bodies)
-      
+
     }
   }
 

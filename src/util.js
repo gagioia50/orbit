@@ -55,9 +55,9 @@ export function createTrails(bodies, scene) {
     for (var i = 0; i < bodies.length; i++) {
         const lineGeometry = new MeshLineGeometry();
         const lineMaterial = new MeshLineMaterial({
-        color: new THREE.Color(bodies[i].color),
-        lineWidth: 0.04,
-        resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
+            color: new THREE.Color(bodies[i].color),
+            lineWidth: 0.02,
+            resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
         });
         const meshLine = new THREE.Mesh(lineGeometry, lineMaterial);
         scene.add(meshLine);
